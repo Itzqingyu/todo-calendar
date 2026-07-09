@@ -97,10 +97,25 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    position: relative;
+    z-index: 0;
   }
   
   h2 {
     margin-top: 0;
     margin-bottom: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  :global(.calendar-container) {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+  }
+
+  :global(.control-panel) {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 5;
   }
 </style>

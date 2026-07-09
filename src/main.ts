@@ -24,12 +24,14 @@ export default class TodoTimelinePlugin extends Plugin {
   async activateView() {
     const { workspace } = this.app;
 
-    // 強制關閉任何已經開啟的舊視圖（例如在側邊欄的）
-    workspace.detachLeavesOfType(VIEW_TYPE_TODO);
+    // 如果已經有開啟的視圖，直接顯示它
+    let leaf = workspace.getLeavesOfType(VIEW_TYPE_TODO)[0];
 
-    // 強制在中央區域建立一個新的分頁
-    const leaf = workspace.getLeaf(true);
-    await leaf.setViewState({ type: VIEW_TYPE_TODO, active: true });
+    if (!leaf) {
+      // 使用 getLeaf(false) 取得當前分頁，此 API 不會拋出 "No tab group found"
+      leaf = workspace.getLeaf(false);
+      await leaf.setViewState({ type: VIEW_TYPE_TODO, active: true });
+    }
 
     workspace.revealLeaf(leaf);
   }

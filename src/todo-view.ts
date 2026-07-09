@@ -26,6 +26,7 @@ export class TodoView extends ItemView {
   }
 
   async onOpen() {
+    this.contentEl.empty();
     this.component = new App({
       target: this.contentEl,
       props: {
