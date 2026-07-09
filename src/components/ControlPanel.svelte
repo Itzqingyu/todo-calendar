@@ -36,7 +36,7 @@
 
     <div class="task-list">
       {#if dayTasks.length === 0}
-        <p class="empty-state">No tasks for this day.</p>
+        <p class="no-tasks-msg">No tasks for this day.</p>
       {:else}
         {#each dayTasks as task (task.id)}
           <TaskItem {task} on:update={handleUpdate} on:delete={handleDelete} />
@@ -54,7 +54,7 @@
       <button on:click={handleAdd} disabled={!newTaskText.trim()}>Add</button>
     </div>
   {:else}
-    <div class="empty-state">
+    <div class="no-date-msg">
       <p>Select a date on the calendar to view and manage tasks.</p>
     </div>
   {/if}
@@ -84,11 +84,12 @@
     max-height: 300px;
     overflow-y: auto;
   }
-  .empty-state {
+  .no-tasks-msg, .no-date-msg {
     color: var(--text-muted);
     font-style: italic;
     text-align: center;
     padding: 1rem 0;
+    margin: 0;
   }
   .add-task-form {
     display: flex;
