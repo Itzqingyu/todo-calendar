@@ -24,23 +24,14 @@ export default class TodoTimelinePlugin extends Plugin {
   async activateView() {
     const { workspace } = this.app;
 
-    let leaf: WorkspaceLeaf | null = null;
-    const leaves = workspace.getLeavesOfType(VIEW_TYPE_TODO);
+    // 強制關閉任何已經開啟的舊視圖（例如在側邊欄的）
+    workspace.detachLeavesOfType(VIEW_TYPE_TODO);
 
-    if (leaves.length > 0) {
-      // A leaf with our view already exists, use that
-      leaf = leaves[0];
-    } else {
-      // Our view could not be found in the workspace, create a new leaf
-      // in the right sidebar for it
-      leaf = workspace.getRightLeaf(false);
-      if(leaf) {
-        await leaf.setViewState({ type: VIEW_TYPE_TODO, active: true });
-      }
-    }
+    // 強制在中央區域建立一個新的分頁
+    const leaf = workspace.getLeaf(true);
+    await leaf.setViewState({ type: VIEW_TYPE_TODO, active: true });
 
-    // "Reveal" the leaf in case it is in a collapsed sidebar
-    if(leaf) workspace.revealLeaf(leaf);
+    workspace.revealLeaf(leaf);
   }
 
   onunload() {}

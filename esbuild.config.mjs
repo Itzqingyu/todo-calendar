@@ -3,8 +3,21 @@ import process from "process";
 import builtins from "builtin-modules";
 import esbuildSvelte from "esbuild-svelte";
 import sveltePreprocess from "svelte-preprocess";
+import fs from "fs";
+import path from "path";
 
 const prod = (process.argv[2] === "production");
+const outDir = "todo-timeline";
+
+// Ensure outDir exists
+if (!fs.existsSync(outDir)) {
+  fs.mkdirSync(outDir, { recursive: true });
+}
+
+// Copy manifest
+if (fs.existsSync("manifest.json")) {
+  fs.copyFileSync("manifest.json", path.join(outDir, "manifest.json"));
+}
 
 const context = await esbuild.context({
   banner: {
@@ -32,7 +45,8 @@ const context = await esbuild.context({
   logLevel: "info",
   sourcemap: prod ? false : "inline",
   treeShaking: true,
-  outfile: "main.js",
+  conditions: ["svelte", "browser"],
+  outfile: path.join(outDir, "main.js"),
   plugins: [
     esbuildSvelte({
       compilerOptions: { css: "injected" },

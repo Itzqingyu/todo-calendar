@@ -1,145 +1,106 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import type { App as ObsidianApp, TFile } from "obsidian";
-  import { tasksStore, currentFileStore, type Task } from "../store";
-  import { parseTodoFile, updateTaskLine } from "../parser";
-  import TaskItem from "./TaskItem.svelte";
+  import { tasksStore, currentFileStore, selectedDateStore, type Task } from "../store";
+  import { parseTodoFile, updateTaskLine, addTask, deleteTask } from "../parser";
+  import Calendar from "./Calendar.svelte";
+  import ControlPanel from "./ControlPanel.svelte";
 
   export let app: ObsidianApp;
 
-  let tasks: Task[] = [];
-  let fileToRead = "to-do-list.md";
-  
-  const unsubscribeTasks = tasksStore.subscribe(value => {
-    tasks = value;
-  });
-
-  const unsubscribeFile = currentFileStore.subscribe(value => {
-    fileToRead = value;
-    loadTasks();
-  });
-
   async function loadTasks() {
     try {
-      const parsedTasks = await parseTodoFile(app, fileToRead);
-      tasksStore.set(parsedTasks);
+      const parsedTasks = await parseTodoFile(app, $currentFileStore);
+      $tasksStore = parsedTasks;
     } catch (e) {
       console.error("Error loading tasks:", e);
     }
   }
 
-  // Listen to file modifications in Obsidian to auto-reload
   const onModify = (file: TFile) => {
-    if (file.path === fileToRead) {
+    if (file.path === $currentFileStore) {
       loadTasks();
     }
   };
 
+  let eventRef: any;
+
   onMount(() => {
-    app.vault.on("modify", onModify);
+    eventRef = app.vault.on("modify", onModify);
     loadTasks();
   });
 
   onDestroy(() => {
-    unsubscribeTasks();
-    unsubscribeFile();
-    app.vault.off("modify", onModify);
+    if (eventRef) {
+      app.vault.offref(eventRef);
+    }
   });
+
+  function handleSelectDate(event: CustomEvent<string>) {
+    $selectedDateStore = event.detail;
+  }
 
   async function handleUpdateTask(event: CustomEvent<{task: Task, completed: boolean, date: string}>) {
     const { task, completed, date } = event.detail;
-    
-    // Construct new line
     const checkChar = completed ? "x" : " ";
-    const newLine = `- [${checkChar}] ${task.text} 📅 ${date}`;
+    const newLine = `- [${checkChar}] ${task.text} @ ${date}`;
     
-    // Optimistic update in UI
-    const updatedTasks = tasks.map(t => {
-      if(t.id === task.id) {
-        return { ...t, completed, date, originalText: newLine };
-      }
-      return t;
-    });
-    tasksStore.set(updatedTasks);
-
-    // Update in file
     try {
-      await updateTaskLine(app, fileToRead, task.line, newLine);
+      await updateTaskLine(app, $currentFileStore, task.line, newLine);
     } catch (e) {
       console.error("Failed to update task", e);
-      // Reload on failure
-      loadTasks();
     }
   }
 
-  // Group tasks by date
-  $: groupedTasks = tasks.reduce((acc, task) => {
-    if(task.date) {
-      if(!acc[task.date]) acc[task.date] = [];
-      acc[task.date].push(task);
+  async function handleAddTask(event: CustomEvent<{text: string, date: string}>) {
+    const { text, date } = event.detail;
+    try {
+      await addTask(app, $currentFileStore, text, date);
+    } catch (e) {
+      console.error("Failed to add task", e);
     }
-    return acc;
-  }, {} as Record<string, Task[]>);
-  
-  $: sortedDates = Object.keys(groupedTasks).sort();
+  }
+
+  async function handleDeleteTask(event: CustomEvent<{task: Task}>) {
+    const { task } = event.detail;
+    try {
+      await deleteTask(app, $currentFileStore, task.line);
+    } catch (e) {
+      console.error("Failed to delete task", e);
+    }
+  }
 </script>
 
-<div class="todo-timeline-container">
-  <h2>Todo Timeline</h2>
+<div class="todo-app-container">
+  <h2>Todo Calendar</h2>
   
-  {#if sortedDates.length === 0}
-    <p class="empty-state">No tasks found with dates in {fileToRead}.</p>
-  {:else}
-    <div class="timeline">
-      {#each sortedDates as date}
-        <div class="date-group">
-          <h3 class="date-header">{date}</h3>
-          <div class="task-list">
-            {#each groupedTasks[date] as task (task.id)}
-              <TaskItem {task} on:update={handleUpdateTask} />
-            {/each}
-          </div>
-        </div>
-      {/each}
-    </div>
-  {/if}
+  <Calendar 
+    tasks={$tasksStore} 
+    selectedDate={$selectedDateStore} 
+    on:select={handleSelectDate} 
+  />
+
+  <ControlPanel 
+    tasks={$tasksStore} 
+    selectedDate={$selectedDateStore} 
+    on:updateTask={handleUpdateTask}
+    on:addTask={handleAddTask}
+    on:deleteTask={handleDeleteTask}
+  />
 </div>
 
 <style>
-  .todo-timeline-container {
+  .todo-app-container {
     padding: 1rem;
     height: 100%;
     overflow-y: auto;
-  }
-  
-  .timeline {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
   }
   
-  .date-group {
-    background-color: var(--background-secondary);
-    border-radius: 8px;
-    padding: 1rem;
-    border: 1px solid var(--background-modifier-border);
-  }
-  
-  .date-header {
+  h2 {
     margin-top: 0;
     margin-bottom: 0.5rem;
-    color: var(--text-accent);
-    font-size: 1.1em;
-  }
-  
-  .task-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .empty-state {
-    color: var(--text-muted);
-    font-style: italic;
   }
 </style>

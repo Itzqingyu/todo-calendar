@@ -24,6 +24,10 @@
       });
     }
   }
+
+  function triggerDelete() {
+    dispatch('delete', { task });
+  }
 </script>
 
 <div class="task-item" class:completed={task.completed}>
@@ -40,6 +44,9 @@
     on:change={changeDate}
     class="task-date"
   />
+  <button class="delete-btn" on:click={triggerDelete} aria-label="Delete task">
+    ✕
+  </button>
 </div>
 
 <style>
@@ -48,7 +55,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem;
-    background: var(--background-primary);
+    background: var(--background-secondary-alt);
     border-radius: 4px;
     border: 1px solid var(--background-modifier-border);
     transition: opacity 0.2s;
@@ -79,5 +86,19 @@
     border-radius: 4px;
     padding: 2px 4px;
     font-size: 0.85em;
+  }
+
+  .delete-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 1em;
+  }
+  .delete-btn:hover {
+    color: var(--text-error);
+    background: var(--background-modifier-hover);
   }
 </style>
