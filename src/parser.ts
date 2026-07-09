@@ -7,10 +7,10 @@ import { Task } from "./store";
 // Group 3: the date YYYY-MM-DD
 const TASK_REGEX = /^- \[( |x|X)\] (.*?) @ (\d{4}-\d{2}-\d{2})/;
 
-export async function parseTodoFile(app: App, filePath: string): Promise<Task[]> {
+export async function parseTodoFile(app: App, filePath: string): Promise<Task[] | null> {
   const file = app.vault.getAbstractFileByPath(filePath);
   if (!(file instanceof TFile)) {
-    return [];
+    return null;
   }
 
   const content = await app.vault.read(file);

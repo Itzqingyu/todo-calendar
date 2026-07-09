@@ -8,12 +8,30 @@
 
   export let app: ObsidianApp;
 
+  let fileExists = true;
+
   async function loadTasks() {
     try {
       const parsedTasks = await parseTodoFile(app, $currentFileStore);
-      $tasksStore = parsedTasks;
+      if (parsedTasks === null) {
+        fileExists = false;
+        $tasksStore = [];
+      } else {
+        fileExists = true;
+        $tasksStore = parsedTasks;
+      }
     } catch (e) {
       console.error("Error loading tasks:", e);
+    }
+  }
+
+  async function createTodoFile() {
+    try {
+      await app.vault.create($currentFileStore, "");
+      fileExists = true;
+      loadTasks();
+    } catch (e) {
+      console.error("Failed to create file:", e);
     }
   }
 
@@ -74,19 +92,34 @@
 <div class="todo-app-container">
   <h2>Todo Calendar</h2>
   
-  <Calendar 
-    tasks={$tasksStore} 
-    selectedDate={$selectedDateStore} 
-    on:select={handleSelectDate} 
-  />
+  {#if !fileExists}
+    <div class="setup-notice">
+      <h3>Welcome to Todo Timeline</h3>
+      <p>We couldn't find the <strong>{$currentFileStore}</strong> file in your vault.</p>
+      <p>Please create a file named <code>{$currentFileStore}</code> in the root of your vault to start using the calendar, or click the button below.</p>
+      
+      <div class="instructions">
+        <h4>Task Format:</h4>
+        <code>- [ ] Task name @ YYYY-MM-DD</code>
+      </div>
 
-  <ControlPanel 
-    tasks={$tasksStore} 
-    selectedDate={$selectedDateStore} 
-    on:updateTask={handleUpdateTask}
-    on:addTask={handleAddTask}
-    on:deleteTask={handleDeleteTask}
-  />
+      <button class="create-btn" on:click={createTodoFile}>Create {$currentFileStore} now</button>
+    </div>
+  {:else}
+    <Calendar 
+      tasks={$tasksStore} 
+      selectedDate={$selectedDateStore} 
+      on:select={handleSelectDate} 
+    />
+
+    <ControlPanel 
+      tasks={$tasksStore} 
+      selectedDate={$selectedDateStore} 
+      on:updateTask={handleUpdateTask}
+      on:addTask={handleAddTask}
+      on:deleteTask={handleDeleteTask}
+    />
+  {/if}
 </div>
 
 <style>
@@ -117,5 +150,47 @@
     flex-shrink: 0;
     position: relative;
     z-index: 5;
+  }
+
+  .setup-notice {
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 2rem;
+  }
+  
+  .setup-notice h3 {
+    margin-top: 0;
+  }
+  
+  .instructions {
+    background: var(--background-primary);
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1.5rem 0;
+    text-align: left;
+    border: 1px solid var(--background-modifier-border);
+  }
+  
+  .instructions h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+  }
+  
+  .create-btn {
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 1rem;
+  }
+  
+  .create-btn:hover {
+    opacity: 0.9;
   }
 </style>
