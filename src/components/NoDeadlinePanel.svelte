@@ -56,7 +56,6 @@
         bind:value={newNoDeadlineText} 
         placeholder="Add a no-deadline task..." 
         on:keydown={(e) => e.key === 'Enter' && handleAddNoDeadline()}
-        autofocus
       />
       <button on:click={handleAddNoDeadline} disabled={!newNoDeadlineText.trim()}>Add</button>
       <button class="cancel-btn" on:click={cancelInput} aria-label="Cancel input">✕</button>
