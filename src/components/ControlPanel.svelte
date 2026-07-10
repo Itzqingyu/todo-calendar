@@ -32,6 +32,7 @@
   {#if selectedDate}
     <div class="panel-header">
       <h3>Tasks for {selectedDate}</h3>
+      <button class="close-panel-btn" on:click={() => dispatch('close')} aria-label="Close panel">✕</button>
     </div>
 
     <div class="task-list">
@@ -71,9 +72,28 @@
     margin-bottom: 1rem;
     border-bottom: 1px solid var(--background-modifier-border);
     padding-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   .panel-header h3 {
     margin: 0;
+    color: var(--text-normal);
+  }
+  .close-panel-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .close-panel-btn:hover {
+    background: var(--background-modifier-hover);
     color: var(--text-normal);
   }
   .task-list {

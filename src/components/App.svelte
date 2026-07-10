@@ -118,6 +118,7 @@
       on:updateTask={handleUpdateTask}
       on:addTask={handleAddTask}
       on:deleteTask={handleDeleteTask}
+      on:close={() => $selectedDateStore = null}
     />
   {/if}
 </div>
