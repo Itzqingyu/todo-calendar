@@ -220,8 +220,11 @@
     border-radius: 4px;
     cursor: pointer;
     position: relative;
-    background: transparent;
-    border: 2px solid transparent;
+    position: relative;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border: 2px solid transparent !important;
     padding: 0;
     color: var(--text-normal);
     font-size: 1em;
@@ -232,18 +235,17 @@
     position: relative;
   }
   .day-cell.current-month:hover {
-    background: var(--background-modifier-hover);
+    background-color: var(--background-modifier-hover) !important;
   }
   .day-cell.other-month {
     color: var(--text-faint);
     cursor: default;
   }
   .day-cell.today {
-    border: 2px solid
-      color-mix(in srgb, var(--color-light-purple, #c5ade3) 100%, transparent);
+    border-color: color-mix(in srgb, var(--color-light-purple, #c5ade3) 100%, transparent) !important;
   }
   .day-cell.selected {
-    border: 2px solid var(--interactive-accent);
+    border-color: var(--interactive-accent) !important;
   }
   .day-cell.status-pending::before {
     content: "";
