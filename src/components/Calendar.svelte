@@ -96,9 +96,9 @@
   const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
 
-  function getTaskStatusClass(dateStr: string) {
+  function getTaskStatusClass(dateStr: string, currentTasks: Task[]) {
     if (!dateStr) return '';
-    const dayTasks = tasks.filter(t => t.date === dateStr);
+    const dayTasks = currentTasks.filter(t => t.date === dateStr);
     if (dayTasks.length === 0) return '';
     
     const allCompleted = dayTasks.every(t => t.completed);
@@ -120,11 +120,11 @@
   <div class="days-grid">
     {#each calendarDays as {day, isCurrentMonth, dateStr}}
       <button 
-        class="day-cell {isCurrentMonth ? 'current-month' : 'other-month'} {dateStr === selectedDate ? 'selected' : ''} {getTaskStatusClass(dateStr)}"
+        class="day-cell {isCurrentMonth ? 'current-month' : 'other-month'} {dateStr === selectedDate ? 'selected' : ''} {getTaskStatusClass(dateStr, tasks)}"
         on:click={() => isCurrentMonth && selectDate(dateStr)}
       >
         <span class="day-number">{day}</span>
-        {#if getTaskStatusClass(dateStr)}
+        {#if getTaskStatusClass(dateStr, tasks)}
           <div class="indicator"></div>
         {/if}
       </button>
