@@ -1,9 +1,0 @@
-{
-  "id": "todo-calendar",
-  "name": "Todo calendar",
-  "version": "1.0.0",
-  "minAppVersion": "1.0.0",
-  "description": "Visual timeline calendar for your to-do-list.md",
-  "author": "qingyu",
-  "isDesktopOnly": false
-}
