@@ -35,6 +35,11 @@ none
 - **成功掛載**：插件能順利在 Obsidian 中啟用，並於中央分頁開啟。
 - **正確解析**：能準確讀取並解析 `to-do-list.md` 內所有帶有 `@ YYYY-MM-DD` 的事項，正確顯示在月曆上，並區分完成度顏色。
 - **雙向同步**：在 UI 上新增事項、刪除事項、勾選完成、修改日期的操作，都能正確無誤地同步回 `to-do-list.md`。
+- **Svelte CSS Scoping**：充分利用 Svelte 的作用域樣式 (Scoped CSS) 機制。請避免創建全域的 `styles.css`，因為將樣式直接寫在 Svelte 組件中可以自動獲得雜湊後綴 (如 `.class-name.svelte-xyz`)，這能有效提高 CSS 權重，防止樣式被 Obsidian 的全域樣式覆蓋或污染。
+- **避免 Obsidian 保留字**：在命名 CSS Class 時，切勿使用 Obsidian 原生的保留字 (例如 `.empty-state`、`.button` 等通用名稱)。這些名稱在 Obsidian 的全域樣式中常帶有絕對定位或特定的 `pointer-events`，會導致 Svelte 渲染的 UI 出現不可預期的排版崩壞或點擊失效。
+- **Z-Index 與重疊管理**：若使用 Flexbox 或絕對定位，請務必處理好各個面板的 `z-index` 與 `flex-shrink` 屬性。當發生「明明看的到按鈕卻無法點擊」的情況，第一步請先檢查是否被透明的其他 Svelte 組件 (如沒有設定高度限制的控制面板) 覆蓋。
+- **分頁開啟防呆 (No tab group found)**：在 `ItemView` 或 `Plugin` 的 `activateView()` 中開啟視圖時，請優先使用 `workspace.getLeaf(false)` 或先檢查現有 `getLeavesOfType`，避免強行 detach 後使用 `getLeaf(true)` 或 `getLeaf("tab")` 導致 Obsidian 拋出 "No tab group found" 錯誤。
+- **容器清空**：在 `ItemView.onOpen()` 中掛載 Svelte 應用程式前，務必先呼叫 `this.contentEl.empty()`，避免 Obsidian 預設產生的 DOM 元素殘留並遮蔽 Svelte 渲染的互動介面。
 
 # Workflow
 
