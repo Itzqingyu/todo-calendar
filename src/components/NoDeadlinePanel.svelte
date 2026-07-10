@@ -1,28 +1,28 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import type { Task } from '../store';
-  import TaskItem from './TaskItem.svelte';
+  import { createEventDispatcher } from "svelte";
+  import type { Task } from "../store";
+  import TaskItem from "./TaskItem.svelte";
 
   export let tasks: Task[] = [];
 
   const dispatch = createEventDispatcher();
-  
+
   let showNoDeadlineInput = false;
   let newNoDeadlineText = "";
 
-  $: undatedTasks = tasks.filter(t => t.date === null);
+  $: undatedTasks = tasks.filter((t) => t.date === null);
 
   function handleUpdate(event: CustomEvent) {
-    dispatch('updateTask', event.detail);
+    dispatch("updateTask", event.detail);
   }
 
   function handleDelete(event: CustomEvent) {
-    dispatch('deleteTask', event.detail);
+    dispatch("deleteTask", event.detail);
   }
 
   function handleAddNoDeadline() {
     if (newNoDeadlineText.trim()) {
-      dispatch('addTask', { text: newNoDeadlineText, date: null });
+      dispatch("addTask", { text: newNoDeadlineText, date: null });
       newNoDeadlineText = "";
       showNoDeadlineInput = false;
     }
@@ -38,7 +38,7 @@
   <div class="panel-header">
     <h3>No Deadline Tasks</h3>
   </div>
-  
+
   <div class="task-list">
     {#if undatedTasks.length === 0}
       <p class="no-tasks-msg">No undated tasks.</p>
@@ -51,18 +51,28 @@
 
   {#if showNoDeadlineInput}
     <div class="add-task-form">
-      <input 
-        type="text" 
-        bind:value={newNoDeadlineText} 
-        placeholder="Add a no-deadline task..." 
-        on:keydown={(e) => e.key === 'Enter' && handleAddNoDeadline()}
+      <input
+        type="text"
+        bind:value={newNoDeadlineText}
+        placeholder="Add a no-deadline task..."
+        on:keydown={(e) => e.key === "Enter" && handleAddNoDeadline()}
       />
-      <button on:click={handleAddNoDeadline} disabled={!newNoDeadlineText.trim()}>Add</button>
-      <button class="cancel-btn" on:click={cancelInput} aria-label="Cancel input">✕</button>
+      <button
+        on:click={handleAddNoDeadline}
+        disabled={!newNoDeadlineText.trim()}>Add</button
+      >
+      <button
+        class="cancel-btn"
+        on:click={cancelInput}
+        aria-label="Cancel input">✕</button
+      >
     </div>
   {:else}
-    <button class="add-no-deadline-btn" on:click={() => showNoDeadlineInput = true}>
-      Add a task without specific deadline
+    <button
+      class="add-no-deadline-btn"
+      on:click={() => (showNoDeadlineInput = true)}
+    >
+      Add a task without specific deadline.
     </button>
   {/if}
 </div>
