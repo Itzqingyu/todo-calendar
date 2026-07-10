@@ -87,7 +87,19 @@
       console.error("Failed to delete task", e);
     }
   }
+
+  function handleGlobalKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape' && $selectedDateStore !== null) {
+      const target = e.target as HTMLElement;
+      // 確保焦點在我們的面板內部時，按下 Esc 才會清除選取狀態
+      if (target.closest('.todo-app-container')) {
+        $selectedDateStore = null;
+      }
+    }
+  }
 </script>
+
+<svelte:window on:keydown={handleGlobalKeydown} />
 
 <div class="todo-app-container">
   <h2>Todo Calendar</h2>
