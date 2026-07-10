@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from 'svelte';
-  import type { Task } from '../store';
+  import { createEventDispatcher, onMount } from "svelte";
+  import type { Task } from "../store";
 
   export let tasks: Task[] = [];
   export let selectedDate: string | null = null;
@@ -9,53 +9,71 @@
 
   let currentDate = new Date();
   let calendarEl: HTMLDivElement;
-  
+
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
   $: currentYear = currentDate.getFullYear();
   $: currentMonth = currentDate.getMonth();
 
   onMount(() => {
-    console.log('[Calendar] Component mounted successfully');
-    console.log('[Calendar] calendarEl bound?', !!calendarEl);
+    console.log("[Calendar] Component mounted successfully");
+    console.log("[Calendar] calendarEl bound?", !!calendarEl);
     // 使用原生 DOM 事件測試點擊是否能到達元素
     if (calendarEl) {
-      calendarEl.addEventListener('click', (e) => {
-        console.log('[Calendar] Native DOM click detected on:', (e.target as HTMLElement).tagName, (e.target as HTMLElement).className);
+      calendarEl.addEventListener("click", (e) => {
+        console.log(
+          "[Calendar] Native DOM click detected on:",
+          (e.target as HTMLElement).tagName,
+          (e.target as HTMLElement).className,
+        );
       });
       // 檢查 computed style 中是否有 pointer-events: none
       const style = window.getComputedStyle(calendarEl);
-      console.log('[Calendar] pointer-events:', style.pointerEvents);
+      console.log("[Calendar] pointer-events:", style.pointerEvents);
       // 檢查所有父元素的 pointer-events
       let el: HTMLElement | null = calendarEl;
       while (el) {
         const s = window.getComputedStyle(el);
-        if (s.pointerEvents === 'none') {
-          console.warn('[Calendar] FOUND pointer-events:none on:', el.tagName, el.className);
+        if (s.pointerEvents === "none") {
+          console.warn(
+            "[Calendar] FOUND pointer-events:none on:",
+            el.tagName,
+            el.className,
+          );
         }
         el = el.parentElement;
       }
     }
     // document 層級的點擊測試
-    document.addEventListener('click', (e) => {
+    document.addEventListener("click", (e) => {
       const target = e.target as HTMLElement;
-      if (target.closest('.calendar-container') || target.closest('.todo-app-container')) {
-        console.log('[Calendar] Document-level click in calendar area:', target.tagName, target.className);
+      if (
+        target.closest(".calendar-container") ||
+        target.closest(".todo-app-container")
+      ) {
+        console.log(
+          "[Calendar] Document-level click in calendar area:",
+          target.tagName,
+          target.className,
+        );
       }
     });
   });
 
   function prevMonth() {
-    console.log('[Calendar] prevMonth clicked');
+    console.log("[Calendar] prevMonth clicked");
     currentDate = new Date(currentYear, currentMonth - 1, 1);
   }
 
   function nextMonth() {
-    console.log('[Calendar] nextMonth clicked');
+    console.log("[Calendar] nextMonth clicked");
     currentDate = new Date(currentYear, currentMonth + 1, 1);
   }
 
   function selectDate(dateStr: string) {
-    console.log('[Calendar] selectDate clicked:', dateStr);
-    dispatch('select', dateStr);
+    console.log("[Calendar] selectDate clicked:", dateStr);
+    dispatch("select", dateStr);
   }
 
   // Get calendar grid
@@ -66,43 +84,59 @@
     const totalDays = lastDay.getDate();
 
     const days = [];
-    
+
     // Previous month padding
     const prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
     for (let i = startingDayOfWeek - 1; i >= 0; i--) {
-      days.push({ day: prevMonthLastDay - i, isCurrentMonth: false, dateStr: '' });
+      days.push({
+        day: prevMonthLastDay - i,
+        isCurrentMonth: false,
+        dateStr: "",
+      });
     }
 
     // Current month days
     for (let i = 1; i <= totalDays; i++) {
-      const monthStr = String(currentMonth + 1).padStart(2, '0');
-      const dayStr = String(i).padStart(2, '0');
-      days.push({ 
-        day: i, 
-        isCurrentMonth: true, 
-        dateStr: `${currentYear}-${monthStr}-${dayStr}` 
+      const monthStr = String(currentMonth + 1).padStart(2, "0");
+      const dayStr = String(i).padStart(2, "0");
+      days.push({
+        day: i,
+        isCurrentMonth: true,
+        dateStr: `${currentYear}-${monthStr}-${dayStr}`,
       });
     }
 
     // Next month padding to fill 6 rows (42 cells)
     const remainingCells = 42 - days.length;
     for (let i = 1; i <= remainingCells; i++) {
-      days.push({ day: i, isCurrentMonth: false, dateStr: '' });
+      days.push({ day: i, isCurrentMonth: false, dateStr: "" });
     }
 
     return days;
   })();
 
-  const monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"];
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   function getTaskStatusClass(dateStr: string, currentTasks: Task[]) {
-    if (!dateStr) return '';
-    const dayTasks = currentTasks.filter(t => t.date === dateStr);
-    if (dayTasks.length === 0) return '';
-    
-    const allCompleted = dayTasks.every(t => t.completed);
-    return allCompleted ? 'status-completed' : 'status-pending';
+    if (!dateStr) return "";
+    const dayTasks = currentTasks.filter((t) => t.date === dateStr);
+    if (dayTasks.length === 0) return "";
+
+    const allCompleted = dayTasks.every((t) => t.completed);
+    return allCompleted ? "status-completed" : "status-pending";
   }
 </script>
 
@@ -114,13 +148,24 @@
   </div>
 
   <div class="timeline-weekdays">
-    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+    <div>Sun</div>
+    <div>Mon</div>
+    <div>Tue</div>
+    <div>Wed</div>
+    <div>Thu</div>
+    <div>Fri</div>
+    <div>Sat</div>
   </div>
 
   <div class="timeline-days-grid">
-    {#each calendarDays as {day, isCurrentMonth, dateStr}}
-      <button 
-        class="day-cell {isCurrentMonth ? 'current-month' : 'other-month'} {dateStr === selectedDate ? 'selected' : ''} {getTaskStatusClass(dateStr, tasks)}"
+    {#each calendarDays as { day, isCurrentMonth, dateStr }}
+      <button
+        class="day-cell {isCurrentMonth
+          ? 'current-month'
+          : 'other-month'} {dateStr === todayStr ? 'today' : ''} {dateStr ===
+        selectedDate
+          ? 'selected'
+          : ''} {getTaskStatusClass(dateStr, tasks)}"
         on:click={() => isCurrentMonth && selectDate(dateStr)}
       >
         <span class="day-number">{day}</span>
@@ -176,7 +221,7 @@
     cursor: pointer;
     position: relative;
     background: transparent;
-    border: 1px solid transparent;
+    border: 2px solid transparent;
     padding: 0;
     color: var(--text-normal);
     font-size: 1em;
@@ -193,11 +238,15 @@
     color: var(--text-faint);
     cursor: default;
   }
+  .day-cell.today {
+    border: 2px solid
+      color-mix(in srgb, var(--color-light-purple, #c5ade3) 100%, transparent);
+  }
   .day-cell.selected {
     border: 2px solid var(--interactive-accent);
   }
   .day-cell.status-pending::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background-color: var(--interactive-accent);
@@ -205,7 +254,7 @@
     z-index: 0;
   }
   .day-cell.status-completed::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background-color: var(--text-success);
