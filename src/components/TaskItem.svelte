@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import type { Task } from '../store';
+  import { t } from '../i18n';
 
   export let task: Task;
 
@@ -49,9 +50,9 @@
   />
   {#if showConfirmDelete}
     <div class="confirm-actions">
-      <span class="confirm-text">Delete?</span>
-      <button class="confirm-btn yes" on:click={confirmDelete}>Yes</button>
-      <button class="confirm-btn no" on:click={() => showConfirmDelete = false}>No</button>
+      <span class="confirm-text">{$t.delete_prompt}</span>
+      <button class="confirm-btn yes" on:click={confirmDelete}>{$t.yes}</button>
+      <button class="confirm-btn no" on:click={() => showConfirmDelete = false}>{$t.no}</button>
     </div>
   {:else}
     <button class="delete-btn" on:click={() => showConfirmDelete = true} aria-label="Delete task">

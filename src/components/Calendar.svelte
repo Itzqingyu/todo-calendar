@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from "svelte";
   import type { Task } from "../store";
+  import { t } from "../i18n";
 
   export let tasks: Task[] = [];
   export let selectedDate: string | null = null;
@@ -115,21 +116,6 @@
     return days;
   })();
 
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
   function getTaskStatusClass(dateStr: string, currentTasks: Task[]) {
     if (!dateStr) return "";
     const dayTasks = currentTasks.filter((t) => t.date === dateStr);
@@ -143,18 +129,14 @@
 <div class="calendar-container" bind:this={calendarEl}>
   <div class="header">
     <button on:click={prevMonth}>&lt;</button>
-    <h3>{monthNames[currentMonth]} {currentYear}</h3>
+    <h3>{$t.months[currentMonth]} {currentYear}</h3>
     <button on:click={nextMonth}>&gt;</button>
   </div>
 
   <div class="timeline-weekdays">
-    <div>Sun</div>
-    <div>Mon</div>
-    <div>Tue</div>
-    <div>Wed</div>
-    <div>Thu</div>
-    <div>Fri</div>
-    <div>Sat</div>
+    {#each $t.weekdays as weekday}
+      <div>{weekday}</div>
+    {/each}
   </div>
 
   <div class="timeline-days-grid">

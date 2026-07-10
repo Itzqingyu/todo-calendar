@@ -2,6 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   import type { Task } from '../store';
   import TaskItem from './TaskItem.svelte';
+  import { t } from '../i18n';
 
   export let tasks: Task[] = [];
 
@@ -55,22 +56,22 @@
 
 <div class="control-panel filter-panel">
   <div class="panel-header">
-    <h3>Filtered Tasks</h3>
+    <h3>{$t.filtered_tasks}</h3>
     <div class="filter-controls">
       <div class="select-wrapper">
         <select bind:value={timeFilter} class="dropdown">
-          <option value="overdue">Overdue</option>
-          <option value="upcoming-3">Next 3 Days</option>
-          <option value="upcoming-7">Next 7 Days</option>
-          <option value="upcoming-14">Next 14 Days</option>
+          <option value="overdue">{$t.filter_overdue}</option>
+          <option value="upcoming-3">{$t.filter_upcoming_3}</option>
+          <option value="upcoming-7">{$t.filter_upcoming_7}</option>
+          <option value="upcoming-14">{$t.filter_upcoming_14}</option>
         </select>
       </div>
       
       <div class="select-wrapper">
         <select bind:value={statusFilter} class="dropdown">
-          <option value="uncompleted">Uncompleted</option>
-          <option value="completed">Completed</option>
-          <option value="all">All</option>
+          <option value="uncompleted">{$t.filter_uncompleted}</option>
+          <option value="completed">{$t.filter_completed}</option>
+          <option value="all">{$t.filter_all}</option>
         </select>
       </div>
     </div>
@@ -78,7 +79,7 @@
   
   <div class="task-list">
     {#if filteredTasks.length === 0}
-      <p class="no-tasks-msg">No tasks match your filters.</p>
+      <p class="no-tasks-msg">{$t.no_tasks_match}</p>
     {:else}
       {#each filteredTasks as task (task.id)}
         <TaskItem {task} on:update={handleUpdate} on:delete={handleDelete} />

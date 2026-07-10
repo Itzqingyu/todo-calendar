@@ -2,6 +2,7 @@
   import { createEventDispatcher } from "svelte";
   import type { Task } from "../store";
   import TaskItem from "./TaskItem.svelte";
+  import { t } from "../i18n";
 
   export let tasks: Task[] = [];
 
@@ -36,12 +37,12 @@
 
 <div class="control-panel no-deadline-panel">
   <div class="panel-header">
-    <h3>No Deadline Tasks</h3>
+    <h3>{$t.no_deadline_tasks}</h3>
   </div>
 
   <div class="task-list">
     {#if undatedTasks.length === 0}
-      <p class="no-tasks-msg">No undated tasks.</p>
+      <p class="no-tasks-msg">{$t.no_undated_tasks}</p>
     {:else}
       {#each undatedTasks as task (task.id)}
         <TaskItem {task} on:update={handleUpdate} on:delete={handleDelete} />
@@ -54,12 +55,12 @@
       <input
         type="text"
         bind:value={newNoDeadlineText}
-        placeholder="Add a no-deadline task..."
+        placeholder={$t.add_no_deadline_task}
         on:keydown={(e) => e.key === "Enter" && handleAddNoDeadline()}
       />
       <button
         on:click={handleAddNoDeadline}
-        disabled={!newNoDeadlineText.trim()}>Add</button
+        disabled={!newNoDeadlineText.trim()}>{$t.add}</button
       >
       <button
         class="cancel-btn"
@@ -72,7 +73,7 @@
       class="add-no-deadline-btn"
       on:click={() => (showNoDeadlineInput = true)}
     >
-      Add a task without specific deadline.
+      {$t.add_no_deadline_btn}
     </button>
   {/if}
 </div>

@@ -2,6 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   import type { Task } from '../store';
   import TaskItem from './TaskItem.svelte';
+  import { t } from '../i18n';
 
   export let tasks: Task[] = [];
   export let selectedDate: string | null = null;
@@ -31,13 +32,13 @@
 <div class="control-panel">
   {#if selectedDate}
     <div class="panel-header">
-      <h3>Tasks for {selectedDate}</h3>
+      <h3>{$t.tasks_for} {selectedDate}</h3>
       <button class="close-panel-btn" on:click={() => dispatch('close')} aria-label="Close panel">✕</button>
     </div>
 
     <div class="task-list">
       {#if dayTasks.length === 0}
-        <p class="no-tasks-msg">No tasks for this day.</p>
+        <p class="no-tasks-msg">{$t.no_tasks_for_day}</p>
       {:else}
         {#each dayTasks as task (task.id)}
           <TaskItem {task} on:update={handleUpdate} on:delete={handleDelete} />
@@ -49,14 +50,14 @@
       <input 
         type="text" 
         bind:value={newTaskText} 
-        placeholder="Add a new task..." 
+        placeholder={$t.add_new_task} 
         on:keydown={(e) => e.key === 'Enter' && handleAdd()}
       />
-      <button on:click={handleAdd} disabled={!newTaskText.trim()}>Add</button>
+      <button on:click={handleAdd} disabled={!newTaskText.trim()}>{$t.add}</button>
     </div>
   {:else}
     <div class="no-date-msg">
-      <p>Select a date on the calendar to view and manage tasks.</p>
+      <p>{$t.select_date}</p>
     </div>
   {/if}
 </div>

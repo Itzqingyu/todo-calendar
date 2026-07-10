@@ -7,6 +7,7 @@
   import ControlPanel from "./ControlPanel.svelte";
   import FilterPanel from "./FilterPanel.svelte";
   import NoDeadlinePanel from "./NoDeadlinePanel.svelte";
+  import { t } from "../i18n";
 
   export let app: ObsidianApp;
 
@@ -97,17 +98,17 @@
   
   {#if !fileExists}
     <div class="setup-notice">
-      <h3>Welcome to Todo Timeline</h3>
-      <p>We couldn't find the <strong>{$currentFileStore}</strong> file in your vault.</p>
-      <p>Please create a file named <code>{$currentFileStore}</code> in the root of your vault to start using the calendar, or click the button below.</p>
+      <h3>{$t.welcome}</h3>
+      <p>{$t.file_not_found} <strong>{$currentFileStore}</strong> {$t.file_not_found_2}</p>
+      <p>{$t.please_create} <code>{$currentFileStore}</code> {$t.please_create_2}</p>
       
       <div class="instructions">
-        <h4>Task Formats:</h4>
+        <h4>{$t.task_formats}</h4>
         <code>- [ ] Task name @ YYYY-MM-DD</code><br/><br/>
         <code>- [ ] No deadline task @ none</code>
       </div>
 
-      <button class="create-btn" on:click={createTodoFile}>Create {$currentFileStore} now</button>
+      <button class="create-btn" on:click={createTodoFile}>{$t.create_now} {$currentFileStore} {$t.create_now_2}</button>
     </div>
   {:else}
     <Calendar 
