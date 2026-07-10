@@ -113,20 +113,17 @@
     <button on:click={nextMonth}>&gt;</button>
   </div>
 
-  <div class="weekdays">
+  <div class="timeline-weekdays">
     <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
   </div>
 
-  <div class="days-grid">
+  <div class="timeline-days-grid">
     {#each calendarDays as {day, isCurrentMonth, dateStr}}
       <button 
         class="day-cell {isCurrentMonth ? 'current-month' : 'other-month'} {dateStr === selectedDate ? 'selected' : ''} {getTaskStatusClass(dateStr, tasks)}"
         on:click={() => isCurrentMonth && selectDate(dateStr)}
       >
         <span class="day-number">{day}</span>
-        {#if getTaskStatusClass(dateStr, tasks)}
-          <div class="indicator"></div>
-        {/if}
       </button>
     {/each}
   </div>
@@ -148,20 +145,28 @@
   .header h3 {
     margin: 0;
   }
-  .weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    color: var(--text-muted);
-  }
-  .days-grid {
+  .timeline-weekdays {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 4px;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+    font-weight: bold;
+  }
+  .timeline-weekdays div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .timeline-days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    width: 100%;
   }
   .day-cell {
+    width: 100%;
     aspect-ratio: 1;
     display: flex;
     flex-direction: column;
@@ -175,6 +180,11 @@
     padding: 0;
     color: var(--text-normal);
     font-size: 1em;
+    overflow: hidden;
+  }
+  .day-cell > * {
+    z-index: 1;
+    position: relative;
   }
   .day-cell.current-month:hover {
     background: var(--background-modifier-hover);
@@ -186,16 +196,20 @@
   .day-cell.selected {
     border: 2px solid var(--interactive-accent);
   }
-  .indicator {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    margin-top: 4px;
-  }
-  .status-pending .indicator {
+  .day-cell.status-pending::before {
+    content: '';
+    position: absolute;
+    inset: 0;
     background-color: var(--interactive-accent);
+    opacity: 0.25;
+    z-index: 0;
   }
-  .status-completed .indicator {
+  .day-cell.status-completed::before {
+    content: '';
+    position: absolute;
+    inset: 0;
     background-color: var(--text-success);
+    opacity: 0.25;
+    z-index: 0;
   }
 </style>
