@@ -5,6 +5,7 @@
   import { parseTodoFile, updateTaskLine, addTask, deleteTask } from "../parser";
   import Calendar from "./Calendar.svelte";
   import ControlPanel from "./ControlPanel.svelte";
+  import FilterPanel from "./FilterPanel.svelte";
   import NoDeadlinePanel from "./NoDeadlinePanel.svelte";
 
   export let app: ObsidianApp;
@@ -122,6 +123,12 @@
       on:addTask={handleAddTask}
       on:deleteTask={handleDeleteTask}
       on:close={() => $selectedDateStore = null}
+    />
+
+    <FilterPanel 
+      tasks={$tasksStore} 
+      on:updateTask={handleUpdateTask}
+      on:deleteTask={handleDeleteTask}
     />
 
     <NoDeadlinePanel 
