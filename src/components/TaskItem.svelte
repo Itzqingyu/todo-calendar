@@ -25,8 +25,11 @@
     }
   }
 
-  function triggerDelete() {
+  let showConfirmDelete = false;
+
+  function confirmDelete() {
     dispatch('delete', { task });
+    showConfirmDelete = false;
   }
 </script>
 
@@ -44,9 +47,17 @@
     on:change={changeDate}
     class="task-date"
   />
-  <button class="delete-btn" on:click={triggerDelete} aria-label="Delete task">
-    ✕
-  </button>
+  {#if showConfirmDelete}
+    <div class="confirm-actions">
+      <span class="confirm-text">Delete?</span>
+      <button class="confirm-btn yes" on:click={confirmDelete}>Yes</button>
+      <button class="confirm-btn no" on:click={() => showConfirmDelete = false}>No</button>
+    </div>
+  {:else}
+    <button class="delete-btn" on:click={() => showConfirmDelete = true} aria-label="Delete task">
+      ✕
+    </button>
+  {/if}
 </div>
 
 <style>
@@ -100,5 +111,33 @@
   .delete-btn:hover {
     color: var(--text-error);
     background: var(--background-modifier-hover);
+  }
+
+  .confirm-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85em;
+  }
+  .confirm-text {
+    color: var(--text-error);
+    margin-right: 4px;
+    font-weight: bold;
+  }
+  .confirm-btn {
+    background: var(--background-modifier-form-field);
+    border: 1px solid var(--background-modifier-border);
+    color: var(--text-normal);
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .confirm-btn.yes {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border-color: var(--interactive-accent);
+  }
+  .confirm-btn:hover {
+    opacity: 0.8;
   }
 </style>
