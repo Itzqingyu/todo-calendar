@@ -1,11 +1,11 @@
 import { App, TFile } from "obsidian";
 import { Task } from "./store";
 
-// RegExp to match: - [ ] text @ YYYY-MM-DD
+// RegExp to match: - [ ] text @ YYYY-MM-DD or @ none
 // Group 1: checkbox (space or x)
 // Group 2: task text before the date
-// Group 3: the date YYYY-MM-DD
-const TASK_REGEX = /^- \[( |x|X)\] (.*?) @ (\d{4}-\d{2}-\d{2})/;
+// Group 3: the date YYYY-MM-DD or "none"
+const TASK_REGEX = /^- \[( |x|X)\] (.*?) @ (\d{4}-\d{2}-\d{2}|none)$/;
 
 export async function parseTodoFile(app: App, filePath: string): Promise<Task[] | null> {
   const file = app.vault.getAbstractFileByPath(filePath);
@@ -25,7 +25,7 @@ export async function parseTodoFile(app: App, filePath: string): Promise<Task[] 
         id: `task-${i}`,
         completed: match[1].toLowerCase() === "x",
         text: match[2].trim(),
-        date: match[3],
+        date: match[3] === "none" ? null : match[3],
         line: i,
         originalText: line,
       });
@@ -50,7 +50,7 @@ export async function updateTaskLine(app: App, filePath: string, lineIndex: numb
   }
 }
 
-export async function addTask(app: App, filePath: string, text: string, date: string): Promise<void> {
+export async function addTask(app: App, filePath: string, text: string, date: string | null): Promise<void> {
   const file = app.vault.getAbstractFileByPath(filePath);
   if (!(file instanceof TFile)) {
     throw new Error(`File ${filePath} not found`);
@@ -63,7 +63,8 @@ export async function addTask(app: App, filePath: string, text: string, date: st
     newContent += "\n";
   }
   
-  const newLine = `- [ ] ${text} @ ${date}`;
+  const datePart = date ? date : 'none';
+  const newLine = `- [ ] ${text} @ ${datePart}`;
   newContent += newLine + "\n";
   
   await app.vault.modify(file, newContent);

@@ -5,6 +5,7 @@
   import { parseTodoFile, updateTaskLine, addTask, deleteTask } from "../parser";
   import Calendar from "./Calendar.svelte";
   import ControlPanel from "./ControlPanel.svelte";
+  import NoDeadlinePanel from "./NoDeadlinePanel.svelte";
 
   export let app: ObsidianApp;
 
@@ -58,10 +59,11 @@
     $selectedDateStore = event.detail;
   }
 
-  async function handleUpdateTask(event: CustomEvent<{task: Task, completed: boolean, date: string}>) {
+  async function handleUpdateTask(event: CustomEvent<{task: Task, completed: boolean, date: string | null}>) {
     const { task, completed, date } = event.detail;
     const checkChar = completed ? "x" : " ";
-    const newLine = `- [${checkChar}] ${task.text} @ ${date}`;
+    const datePart = date ? date : "none";
+    const newLine = `- [${checkChar}] ${task.text} @ ${datePart}`;
     
     try {
       await updateTaskLine(app, $currentFileStore, task.line, newLine);
@@ -70,7 +72,7 @@
     }
   }
 
-  async function handleAddTask(event: CustomEvent<{text: string, date: string}>) {
+  async function handleAddTask(event: CustomEvent<{text: string, date: string | null}>) {
     const { text, date } = event.detail;
     try {
       await addTask(app, $currentFileStore, text, date);
@@ -99,8 +101,9 @@
       <p>Please create a file named <code>{$currentFileStore}</code> in the root of your vault to start using the calendar, or click the button below.</p>
       
       <div class="instructions">
-        <h4>Task Format:</h4>
-        <code>- [ ] Task name @ YYYY-MM-DD</code>
+        <h4>Task Formats:</h4>
+        <code>- [ ] Task name @ YYYY-MM-DD</code><br/><br/>
+        <code>- [ ] No deadline task @ none</code>
       </div>
 
       <button class="create-btn" on:click={createTodoFile}>Create {$currentFileStore} now</button>
@@ -119,6 +122,13 @@
       on:addTask={handleAddTask}
       on:deleteTask={handleDeleteTask}
       on:close={() => $selectedDateStore = null}
+    />
+
+    <NoDeadlinePanel 
+      tasks={$tasksStore} 
+      on:updateTask={handleUpdateTask}
+      on:addTask={handleAddTask}
+      on:deleteTask={handleDeleteTask}
     />
   {/if}
 </div>
