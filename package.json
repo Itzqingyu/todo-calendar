@@ -1,7 +1,7 @@
 {
-  "name": "obsidian-todo-timeline",
+  "name": "obsidian-todo-calendar",
   "version": "1.0.0",
-  "description": "Visual timeline for to-do-list.md",
+  "description": "Visual calendar for todo-calendar.md",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",

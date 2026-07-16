@@ -8,10 +8,17 @@
   import FilterPanel from "./FilterPanel.svelte";
   import NoDeadlinePanel from "./NoDeadlinePanel.svelte";
   import { t } from "../i18n";
+  import { FileSuggestModal } from "../FileSuggestModal";
 
   export let app: ObsidianApp;
+  export let plugin: any;
 
   let fileExists = true;
+
+  $: {
+    const _ = $currentFileStore;
+    loadTasks();
+  }
 
   async function loadTasks() {
     try {
@@ -19,6 +26,15 @@
       if (parsedTasks === null) {
         fileExists = false;
         $tasksStore = [];
+        
+        // Reset to default if the custom file is missing
+        if ($currentFileStore !== "todo-calendar.md") {
+          $currentFileStore = "todo-calendar.md";
+          if (plugin && plugin.settings) {
+            plugin.settings.targetFile = "todo-calendar.md";
+            plugin.saveSettings();
+          }
+        }
       } else {
         fileExists = true;
         $tasksStore = parsedTasks;
@@ -30,9 +46,13 @@
 
   async function createTodoFile() {
     try {
-      await app.vault.create($currentFileStore, "");
+      await app.vault.create("todo-calendar.md", "");
+      $currentFileStore = "todo-calendar.md";
+      if (plugin && plugin.settings) {
+        plugin.settings.targetFile = "todo-calendar.md";
+        await plugin.saveSettings();
+      }
       fileExists = true;
-      loadTasks();
     } catch (e) {
       console.error("Failed to create file:", e);
     }
@@ -43,6 +63,14 @@
       loadTasks();
     }
   };
+
+  function handleSelectExistingFile() {
+    new FileSuggestModal(app, async (file) => {
+      $currentFileStore = file.path;
+      plugin.settings.targetFile = file.path;
+      await plugin.saveSettings();
+    }).open();
+  }
 
   let eventRef: any;
 
@@ -99,8 +127,8 @@
   {#if !fileExists}
     <div class="setup-notice">
       <h3>{$t.welcome}</h3>
-      <p>{$t.file_not_found} <strong>{$currentFileStore}</strong> {$t.file_not_found_2}</p>
-      <p>{$t.please_create} <code>{$currentFileStore}</code> {$t.please_create_2}</p>
+      <p>{$t.welcome_desc_1}</p>
+      <p>{$t.welcome_desc_2}</p>
       
       <div class="instructions">
         <h4>{$t.task_formats}</h4>
@@ -108,7 +136,10 @@
         <code>- [ ] No deadline task @ none</code>
       </div>
 
-      <button class="create-btn" on:click={createTodoFile}>{$t.create_now} {$currentFileStore} {$t.create_now_2}</button>
+      <div class="actions-row" style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem;">
+        <button class="create-btn" style="margin-top: 0;" on:click={createTodoFile}>{$t.create_now}</button>
+        <button class="create-btn select-btn" style="margin-top: 0; background-color: var(--background-modifier-form-field); color: var(--text-normal); border: 1px solid var(--background-modifier-border);" on:click={handleSelectExistingFile}>{$t.select_existing_file}</button>
+      </div>
     </div>
   {:else}
     <Calendar 

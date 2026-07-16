@@ -40,13 +40,11 @@ const translations = {
 
     // App Empty State
     welcome: "Welcome to Todo Calendar",
-    file_not_found: "We couldn't find the",
-    file_not_found_2: "file in your vault.",
-    please_create: "Please create a file named",
-    please_create_2: "in the root of your vault to start using Todo Calendar, or click the button below.",
+    welcome_desc_1: "There is currently no markdown file bound to this plugin in this vault.",
+    welcome_desc_2: "Click the button below to create todo-calendar.md in the root directory directly, or specify an existing markdown file.",
     task_formats: "Task Formats:",
-    create_now: "Create",
-    create_now_2: "now",
+    create_now: "Create todo-calendar.md now",
+    select_existing_file: "Select existing file",
   },
   'zh-TW': {
     // App / ControlPanel
@@ -83,13 +81,11 @@ const translations = {
 
     // App Empty State
     welcome: "歡迎使用 Todo Calendar",
-    file_not_found: "目前在此庫中沒有",
-    file_not_found_2: "檔案。",
-    please_create: "請在根目錄建立名為",
-    please_create_2: "的檔案以開始使用 Todo Calendar，或直接點擊下方按鈕。",
+    welcome_desc_1: "目前在此庫中沒有與此插件綁定的 markdown 檔案。",
+    welcome_desc_2: "點擊下方按鈕直接在根目錄創建 todo-calendar.md，或指定一個現有 markdown 檔案。",
     task_formats: "代辦事項格式：",
-    create_now: "立即建立",
-    create_now_2: "",
+    create_now: "立即建立 todo-calendar.md",
+    select_existing_file: "選擇現有檔案",
   }
 };
 

@@ -1,40 +1,45 @@
 import { Plugin, WorkspaceLeaf, PluginSettingTab, App, Setting } from "obsidian";
 import { TodoView, VIEW_TYPE_TODO } from "./todo-view";
 import { currentLanguage, type Language } from "./i18n";
+import { currentFileStore } from "./store";
+import { FileSuggestModal } from "./FileSuggestModal";
 
-interface TodoTimelineSettings {
+interface TodoCalendarSettings {
   language: Language;
+  targetFile: string;
 }
 
-const DEFAULT_SETTINGS: TodoTimelineSettings = {
+const DEFAULT_SETTINGS: TodoCalendarSettings = {
   language: "en",
+  targetFile: "todo-calendar.md",
 };
 
-export default class TodoTimelinePlugin extends Plugin {
-  settings: TodoTimelineSettings;
+export default class TodoCalendarPlugin extends Plugin {
+  settings: TodoCalendarSettings;
 
   async onload() {
     await this.loadSettings();
     currentLanguage.set(this.settings.language);
+    currentFileStore.set(this.settings.targetFile);
 
     this.registerView(
       VIEW_TYPE_TODO,
       (leaf: WorkspaceLeaf) => new TodoView(leaf, this)
     );
 
-    this.addRibbonIcon("calendar-with-checkmark", "Open Todo Timeline", () => {
+    this.addRibbonIcon("calendar-with-checkmark", "Open Todo Calendar", () => {
       this.activateView();
     });
 
     this.addCommand({
-      id: "open-todo-timeline",
-      name: "Open Todo Timeline View",
+      id: "open-todo-calendar",
+      name: "Open Todo Calendar View",
       callback: () => {
         this.activateView();
       },
     });
 
-    this.addSettingTab(new TodoTimelineSettingTab(this.app, this));
+    this.addSettingTab(new TodoCalendarSettingTab(this.app, this));
   }
 
   async loadSettings() {
@@ -64,10 +69,10 @@ export default class TodoTimelinePlugin extends Plugin {
   onunload() {}
 }
 
-class TodoTimelineSettingTab extends PluginSettingTab {
-  plugin: TodoTimelinePlugin;
+class TodoCalendarSettingTab extends PluginSettingTab {
+  plugin: TodoCalendarPlugin;
 
-  constructor(app: App, plugin: TodoTimelinePlugin) {
+  constructor(app: App, plugin: TodoCalendarPlugin) {
     super(app, plugin);
     this.plugin = plugin;
   }
@@ -78,7 +83,7 @@ class TodoTimelineSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Language / 語言")
-      .setDesc("Choose the display language for the Todo Timeline view.")
+      .setDesc("Choose the display language for the Todo Calendar view.")
       .addDropdown((dropdown) => {
         dropdown
           .addOption("en", "English")
@@ -88,6 +93,23 @@ class TodoTimelineSettingTab extends PluginSettingTab {
             this.plugin.settings.language = value as Language;
             await this.plugin.saveSettings();
           });
+      });
+
+    new Setting(containerEl)
+      .setName("Target File / 目標檔案")
+      .setDesc("The markdown file to load and save tasks. / 用來讀取與儲存待辦事項的 Markdown 檔案。")
+      .addText((text) => {
+        text.setValue(this.plugin.settings.targetFile).setDisabled(true);
+      })
+      .addButton((button) => {
+        button.setButtonText("Change / 變更").onClick(() => {
+          new FileSuggestModal(this.plugin.app, async (file) => {
+            this.plugin.settings.targetFile = file.path;
+            await this.plugin.saveSettings();
+            currentFileStore.set(file.path);
+            this.display();
+          }).open();
+        });
       });
   }
 }

@@ -10,5 +10,5 @@ export interface Task {
 }
 
 export const tasksStore = writable<Task[]>([]);
-export const currentFileStore = writable<string>("to-do-list.md");
+export const currentFileStore = writable<string>("todo-calendar.md");
 export const selectedDateStore = writable<string | null>(null);

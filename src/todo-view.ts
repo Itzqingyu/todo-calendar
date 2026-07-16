@@ -1,14 +1,14 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
 import App from "./components/App.svelte";
-import type TodoTimelinePlugin from "./main";
+import type TodoCalendarPlugin from "./main";
 
-export const VIEW_TYPE_TODO = "todo-timeline-view";
+export const VIEW_TYPE_TODO = "todo-calendar-view";
 
 export class TodoView extends ItemView {
   component!: App;
-  plugin: TodoTimelinePlugin;
+  plugin: TodoCalendarPlugin;
 
-  constructor(leaf: WorkspaceLeaf, plugin: TodoTimelinePlugin) {
+  constructor(leaf: WorkspaceLeaf, plugin: TodoCalendarPlugin) {
     super(leaf);
     this.plugin = plugin;
   }
@@ -18,7 +18,7 @@ export class TodoView extends ItemView {
   }
 
   getDisplayText() {
-    return "Todo Timeline";
+    return "Todo Calendar";
   }
 
   getIcon(): string {
@@ -30,7 +30,8 @@ export class TodoView extends ItemView {
     this.component = new App({
       target: this.contentEl,
       props: {
-        app: this.app
+        app: this.app,
+        plugin: this.plugin
       }
     });
   }
