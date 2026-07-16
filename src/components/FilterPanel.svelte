@@ -1,56 +1,57 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import type { Task } from '../store';
-  import TaskItem from './TaskItem.svelte';
-  import { t } from '../i18n';
+  import { createEventDispatcher } from "svelte";
+  import type { Task } from "../store";
+  import TaskItem from "./TaskItem.svelte";
+  import { t } from "../i18n";
 
   export let tasks: Task[] = [];
 
   const dispatch = createEventDispatcher();
-  
-  let timeFilter: 'overdue' | 'upcoming-3' | 'upcoming-7' | 'upcoming-14' = 'overdue';
-  let statusFilter: 'uncompleted' | 'completed' | 'all' = 'uncompleted';
+
+  let timeFilter: "overdue" | "upcoming-3" | "upcoming-7" | "upcoming-14" =
+    "upcoming-3";
+  let statusFilter: "uncompleted" | "completed" | "all" = "uncompleted";
 
   function parseDate(dateStr: string) {
-    const [y, m, d] = dateStr.split('-');
+    const [y, m, d] = dateStr.split("-");
     return new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
   }
 
-  $: filteredTasks = tasks.filter(t => {
-    if (!t.date || t.date === 'none') return false;
-    
+  $: filteredTasks = tasks.filter((t) => {
+    if (!t.date || t.date === "none") return false;
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     const taskDate = parseDate(t.date);
     const timeDiff = taskDate.getTime() - today.getTime();
     const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-    
+
     let timeMatch = false;
-    if (timeFilter === 'overdue') {
+    if (timeFilter === "overdue") {
       timeMatch = diffDays < 0;
-    } else if (timeFilter === 'upcoming-3') {
+    } else if (timeFilter === "upcoming-3") {
       timeMatch = diffDays >= 0 && diffDays <= 3;
-    } else if (timeFilter === 'upcoming-7') {
+    } else if (timeFilter === "upcoming-7") {
       timeMatch = diffDays >= 0 && diffDays <= 7;
-    } else if (timeFilter === 'upcoming-14') {
+    } else if (timeFilter === "upcoming-14") {
       timeMatch = diffDays >= 0 && diffDays <= 14;
     }
-    
+
     let statusMatch = false;
-    if (statusFilter === 'all') statusMatch = true;
-    else if (statusFilter === 'completed') statusMatch = t.completed;
-    else if (statusFilter === 'uncompleted') statusMatch = !t.completed;
-    
+    if (statusFilter === "all") statusMatch = true;
+    else if (statusFilter === "completed") statusMatch = t.completed;
+    else if (statusFilter === "uncompleted") statusMatch = !t.completed;
+
     return timeMatch && statusMatch;
   });
 
   function handleUpdate(event: CustomEvent) {
-    dispatch('updateTask', event.detail);
+    dispatch("updateTask", event.detail);
   }
 
   function handleDelete(event: CustomEvent) {
-    dispatch('deleteTask', event.detail);
+    dispatch("deleteTask", event.detail);
   }
 </script>
 
@@ -66,7 +67,7 @@
           <option value="upcoming-14">{$t.filter_upcoming_14}</option>
         </select>
       </div>
-      
+
       <div class="select-wrapper">
         <select bind:value={statusFilter} class="dropdown">
           <option value="uncompleted">{$t.filter_uncompleted}</option>
@@ -76,7 +77,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="task-list">
     {#if filteredTasks.length === 0}
       <p class="no-tasks-msg">{$t.no_tasks_match}</p>

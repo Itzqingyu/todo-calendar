@@ -7,7 +7,7 @@ import fs from "fs";
 import path from "path";
 
 const prod = (process.argv[2] === "production");
-const outDir = "todo-timeline";
+const outDir = "todo-calendar";
 
 // Ensure outDir exists
 if (!fs.existsSync(outDir)) {
