@@ -86,7 +86,11 @@
   });
 
   function handleSelectDate(event: CustomEvent<string>) {
-    $selectedDateStore = event.detail;
+    if ($selectedDateStore === event.detail) {
+      $selectedDateStore = null;
+    } else {
+      $selectedDateStore = event.detail;
+    }
   }
 
   async function handleUpdateTask(event: CustomEvent<{task: Task, completed: boolean, date: string | null}>) {
