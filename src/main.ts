@@ -1,6 +1,7 @@
 import { Plugin, WorkspaceLeaf, PluginSettingTab, App, Setting } from "obsidian";
 import { TodoView, VIEW_TYPE_TODO } from "./todo-view";
-import { currentLanguage, type Language } from "./i18n";
+import { currentLanguage, t, type Language } from "./i18n";
+import { get } from "svelte/store";
 import { currentFileStore } from "./store";
 import { FileSuggestModal } from "./FileSuggestModal";
 
@@ -79,11 +80,12 @@ class TodoCalendarSettingTab extends PluginSettingTab {
 
   display(): void {
     const { containerEl } = this;
+    const $t = get(t);
     containerEl.empty();
 
     new Setting(containerEl)
-      .setName("Language / 語言")
-      .setDesc("Choose the display language for the Todo Calendar view.")
+      .setName($t.settings_language_name)
+      .setDesc($t.settings_language_desc)
       .addDropdown((dropdown) => {
         dropdown
           .addOption("en", "English")
@@ -92,17 +94,18 @@ class TodoCalendarSettingTab extends PluginSettingTab {
           .onChange(async (value) => {
             this.plugin.settings.language = value as Language;
             await this.plugin.saveSettings();
+            this.display();
           });
       });
 
     new Setting(containerEl)
-      .setName("Target File / 目標檔案")
-      .setDesc("The markdown file to load and save tasks. / 用來讀取與儲存待辦事項的 Markdown 檔案。")
+      .setName($t.settings_target_name)
+      .setDesc($t.settings_target_desc)
       .addText((text) => {
         text.setValue(this.plugin.settings.targetFile).setDisabled(true);
       })
       .addButton((button) => {
-        button.setButtonText("Change / 變更").onClick(() => {
+        button.setButtonText($t.settings_change_btn).onClick(() => {
           new FileSuggestModal(this.plugin.app, async (file) => {
             this.plugin.settings.targetFile = file.path;
             await this.plugin.saveSettings();

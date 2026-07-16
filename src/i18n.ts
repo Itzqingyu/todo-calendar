@@ -45,6 +45,13 @@ const translations = {
     task_formats: "Task Formats:",
     create_now: "Create todo-calendar.md now",
     select_existing_file: "Select existing file",
+
+    // Settings
+    settings_language_name: "Language",
+    settings_language_desc: "Choose the display language for the Todo Calendar view.",
+    settings_target_name: "Target File",
+    settings_target_desc: "The markdown file to load and save tasks.",
+    settings_change_btn: "Change",
   },
   'zh-TW': {
     // App / ControlPanel
@@ -86,6 +93,13 @@ const translations = {
     task_formats: "代辦事項格式：",
     create_now: "立即建立 todo-calendar.md",
     select_existing_file: "選擇現有檔案",
+
+    // Settings
+    settings_language_name: "語言",
+    settings_language_desc: "選擇 Todo Calendar 面板的顯示語言。",
+    settings_target_name: "目標檔案",
+    settings_target_desc: "用來讀取與儲存待辦事項的 Markdown 檔案。",
+    settings_change_btn: "變更",
   }
 };
 
