@@ -224,12 +224,9 @@
     cursor: default;
   }
   .day-cell.today {
-    border-color: color-mix(in srgb, var(--color-light-purple, #c5ade3) 100%, transparent) !important;
+    /* No border anymore */
   }
-  .day-cell.selected {
-    border-color: var(--interactive-accent) !important;
-  }
-  .day-cell.status-pending::before {
+  .day-cell.today::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -237,12 +234,29 @@
     opacity: 0.25;
     z-index: 0;
   }
-  .day-cell.status-completed::before {
+  .day-cell.selected {
+    border-color: var(--interactive-accent) !important;
+  }
+  .day-cell.status-pending::after {
     content: "";
     position: absolute;
-    inset: 0;
+    top: 4px;
+    right: 4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--interactive-accent);
+    z-index: 2;
+  }
+  .day-cell.status-completed::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
     background-color: var(--text-success);
-    opacity: 0.25;
-    z-index: 0;
+    z-index: 2;
   }
 </style>
