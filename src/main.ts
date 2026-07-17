@@ -8,11 +8,13 @@ import { FileSuggestModal } from "./FileSuggestModal";
 interface TodoCalendarSettings {
   language: Language;
   targetFile: string;
+  openInRightSidebar: boolean;
 }
 
 const DEFAULT_SETTINGS: TodoCalendarSettings = {
   language: "en",
   targetFile: "todo-calendar.md",
+  openInRightSidebar: false,
 };
 
 export default class TodoCalendarPlugin extends Plugin {
@@ -59,8 +61,11 @@ export default class TodoCalendarPlugin extends Plugin {
     let leaf = workspace.getLeavesOfType(VIEW_TYPE_TODO)[0];
 
     if (!leaf) {
-      // 使用 getLeaf(false) 取得當前分頁，此 API 不會拋出 "No tab group found"
-      leaf = workspace.getLeaf(false);
+      if (this.settings.openInRightSidebar) {
+        leaf = workspace.getRightLeaf(false);
+      } else {
+        leaf = workspace.getLeaf(false);
+      }
       await leaf.setViewState({ type: VIEW_TYPE_TODO, active: true });
     }
 
@@ -113,6 +118,18 @@ class TodoCalendarSettingTab extends PluginSettingTab {
             this.display();
           }).open();
         });
+      });
+
+    new Setting(containerEl)
+      .setName($t.settings_open_sidebar_name)
+      .setDesc($t.settings_open_sidebar_desc)
+      .addToggle((toggle) => {
+        toggle
+          .setValue(this.plugin.settings.openInRightSidebar)
+          .onChange(async (value) => {
+            this.plugin.settings.openInRightSidebar = value;
+            await this.plugin.saveSettings();
+          });
       });
   }
 }

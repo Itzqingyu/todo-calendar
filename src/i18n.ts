@@ -52,6 +52,8 @@ const translations = {
     settings_target_name: "Target File",
     settings_target_desc: "The markdown file to load and save tasks.",
     settings_change_btn: "Change",
+    settings_open_sidebar_name: "Open in Right Sidebar",
+    settings_open_sidebar_desc: "When enabled, opening the calendar will place it in the right sidebar instead of the main workspace. Requires restarting the plugin to take effect.",
   },
   'zh-TW': {
     // App / ControlPanel
@@ -100,6 +102,8 @@ const translations = {
     settings_target_name: "目標檔案",
     settings_target_desc: "用來讀取與儲存待辦事項的 Markdown 檔案。",
     settings_change_btn: "變更",
+    settings_open_sidebar_name: "在右側邊欄開啟",
+    settings_open_sidebar_desc: "啟用後，開啟插件會將面板開啟於右側邊欄而非主畫面。變更此選項須重啟插件。",
   }
 };
 
