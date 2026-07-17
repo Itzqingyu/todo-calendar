@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS: TodoCalendarSettings = {
 };
 
 export default class TodoCalendarPlugin extends Plugin {
-  settings: TodoCalendarSettings;
+  declare settings: TodoCalendarSettings;
 
   async onload() {
     await this.loadSettings();
@@ -62,7 +62,7 @@ export default class TodoCalendarPlugin extends Plugin {
 
     if (!leaf) {
       if (this.settings.openInRightSidebar) {
-        leaf = workspace.getRightLeaf(false);
+        leaf = workspace.getRightLeaf(false) || workspace.getLeaf(false);
       } else {
         leaf = workspace.getLeaf(false);
       }

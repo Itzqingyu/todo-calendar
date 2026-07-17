@@ -1,5 +1,5 @@
 import { App, TFile } from "obsidian";
-import { Task } from "./store";
+import type { Task } from "./store";
 
 // RegExp to match: - [ ] text @ YYYY-MM-DD or @ none
 // Group 1: checkbox (space or x)

@@ -223,9 +223,6 @@
     color: var(--text-faint);
     cursor: default;
   }
-  .day-cell.today {
-    /* No border anymore */
-  }
   .day-cell.today::before {
     content: "";
     position: absolute;

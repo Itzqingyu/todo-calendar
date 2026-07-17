@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import type { App as ObsidianApp, TFile } from "obsidian";
-  import { tasksStore, currentFileStore, selectedDateStore, type Task } from "../store";
+  import type { App as ObsidianApp, TFile, TAbstractFile } from "obsidian";
+  import { tasksStore, currentFileStore, selectedDateStore } from "../store";
+  import type { Task } from "../store";
   import { parseTodoFile, updateTaskLine, addTask, deleteTask } from "../parser";
   import Calendar from "./Calendar.svelte";
   import ControlPanel from "./ControlPanel.svelte";
@@ -58,7 +59,7 @@
     }
   }
 
-  const onModify = (file: TFile) => {
+  const onModify = (file: TAbstractFile) => {
     if (file.path === $currentFileStore) {
       loadTasks();
     }
