@@ -8,8 +8,8 @@
 
 ## 📸 介面預覽
 
-![歡迎畫面](assets\welcome-zh-TW.png)
-![面板](assets\controlpanel-zh-TW.png)
+![歡迎畫面](assets/welcome-zh-TW.png)
+![面板](assets/controlpanel-zh-TW.png)
 
 ---
 
