@@ -1,29 +1,31 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import type { Task } from '../store';
-  import TaskItem from './TaskItem.svelte';
-  import { t } from '../i18n';
+  import { createEventDispatcher } from "svelte";
+  import type { Task } from "../store";
+  import TaskItem from "./TaskItem.svelte";
+  import { t } from "../i18n";
 
   export let tasks: Task[] = [];
   export let selectedDate: string | null = null;
 
   const dispatch = createEventDispatcher();
-  
+
   let newTaskText = "";
 
-  $: dayTasks = selectedDate ? tasks.filter(t => t.date === selectedDate) : [];
+  $: dayTasks = selectedDate
+    ? tasks.filter((t) => t.date === selectedDate)
+    : [];
 
   function handleUpdate(event: CustomEvent) {
-    dispatch('updateTask', event.detail);
+    dispatch("updateTask", event.detail);
   }
 
   function handleDelete(event: CustomEvent) {
-    dispatch('deleteTask', event.detail);
+    dispatch("deleteTask", event.detail);
   }
 
   function handleAdd() {
     if (newTaskText.trim() && selectedDate) {
-      dispatch('addTask', { text: newTaskText, date: selectedDate });
+      dispatch("addTask", { text: newTaskText, date: selectedDate });
       newTaskText = "";
     }
   }
@@ -33,7 +35,11 @@
   {#if selectedDate}
     <div class="panel-header">
       <h3>{$t.tasks_for} {selectedDate}</h3>
-      <button class="close-panel-btn" on:click={() => dispatch('close')} aria-label="Close panel">✕</button>
+      <button
+        class="close-panel-btn"
+        on:click={() => dispatch("close")}
+        aria-label="Close panel">✕</button
+      >
     </div>
 
     <div class="task-list">
@@ -47,13 +53,15 @@
     </div>
 
     <div class="add-task-form">
-      <input 
-        type="text" 
-        bind:value={newTaskText} 
-        placeholder={$t.add_new_task} 
-        on:keydown={(e) => e.key === 'Enter' && handleAdd()}
+      <input
+        type="text"
+        bind:value={newTaskText}
+        placeholder={$t.add_new_task}
+        on:keydown={(e) => e.key === "Enter" && handleAdd()}
       />
-      <button on:click={handleAdd} disabled={!newTaskText.trim()}>{$t.add}</button>
+      <button on:click={handleAdd} disabled={!newTaskText.trim()}
+        >{$t.add}</button
+      >
     </div>
   {:else}
     <div class="no-date-msg">
@@ -63,12 +71,6 @@
 </div>
 
 <style>
-  .control-panel {
-    background: var(--background-primary);
-    border-radius: 8px;
-    padding: 1rem;
-    border: 1px solid var(--background-modifier-border);
-  }
   .panel-header {
     margin-bottom: 1rem;
     border-bottom: 1px solid var(--background-modifier-border);
@@ -105,7 +107,8 @@
     max-height: 300px;
     overflow-y: auto;
   }
-  .no-tasks-msg, .no-date-msg {
+  .no-tasks-msg,
+  .no-date-msg {
     color: var(--text-muted);
     font-style: italic;
     text-align: center;

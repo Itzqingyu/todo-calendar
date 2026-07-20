@@ -157,12 +157,6 @@
 </div>
 
 <style>
-  .calendar-container {
-    background: var(--background-secondary);
-    border-radius: 8px;
-    padding: 1rem;
-    border: 1px solid var(--background-modifier-border);
-  }
   .header {
     display: flex;
     justify-content: space-between;
