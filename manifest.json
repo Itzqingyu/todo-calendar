@@ -2,7 +2,7 @@
   "id": "todo-calendar",
   "name": "Todo Calendar",
   "version": "1.0.0",
-  "minAppVersion": "1.0.0",
+  "minAppVersion": "1.4.0",
   "description": "Visual calendar for your to-do-calendar.md.",
   "author": "qingyu",
   "isDesktopOnly": false

@@ -31,14 +31,14 @@ export default class TodoCalendarPlugin extends Plugin {
     );
 
     this.addRibbonIcon("calendar-with-checkmark", "Open Todo Calendar", () => {
-      this.activateView();
+      void this.activateView();
     });
 
     this.addCommand({
-      id: "open-todo-calendar",
-      name: "Open Todo Calendar View",
+      id: "open-view",
+      name: "Open View",
       callback: () => {
-        this.activateView();
+        void this.activateView();
       },
     });
 
@@ -46,7 +46,7 @@ export default class TodoCalendarPlugin extends Plugin {
   }
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, (await this.loadData()) as Partial<TodoCalendarSettings>);
   }
 
   async saveSettings() {
@@ -69,7 +69,7 @@ export default class TodoCalendarPlugin extends Plugin {
       await leaf.setViewState({ type: VIEW_TYPE_TODO, active: true });
     }
 
-    workspace.revealLeaf(leaf);
+    void workspace.revealLeaf(leaf);
   }
 
   onunload() {}
@@ -111,11 +111,12 @@ class TodoCalendarSettingTab extends PluginSettingTab {
       })
       .addButton((button) => {
         button.setButtonText($t.settings_change_btn).onClick(() => {
-          new FileSuggestModal(this.plugin.app, async (file) => {
+          new FileSuggestModal(this.plugin.app, (file) => {
             this.plugin.settings.targetFile = file.path;
-            await this.plugin.saveSettings();
-            currentFileStore.set(file.path);
-            this.display();
+            this.plugin.saveSettings().then(() => {
+              currentFileStore.set(file.path);
+              this.display();
+            });
           }).open();
         });
       });
