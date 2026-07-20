@@ -9,14 +9,8 @@ This plugin transforms your Markdown task list into an intuitive calendar and ti
 
 ## 📸 Screenshots
 
-> **[Tip for Developer] How to insert images:**
-> 1. When editing Markdown on GitHub, you can simply drag and drop images into the editor. GitHub will automatically upload them and generate the Markdown image links.
-> 2. Alternatively, create an `assets` folder in your repository, place your images there, and reference them like this: `![Calendar View](assets/calendar-view.png)`.
-
-<!-- Please insert your images here -->
-![Welcome Screen Placeholder](https://via.placeholder.com/800x450?text=Welcome+Screen+Screenshot)
-![Calendar View Placeholder](https://via.placeholder.com/800x450?text=Calendar+View+Screenshot)
-![Control Panel Placeholder](https://via.placeholder.com/800x450?text=Control+Panel+Screenshot)
+![Welcome Screen](assets/welcome.png)
+![Control Panel](assets/controlpanel.png)
 
 ---
 

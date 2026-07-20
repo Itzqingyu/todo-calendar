@@ -8,14 +8,8 @@
 
 ## 📸 介面預覽
 
-> **[給開發者的提示] 如何插入圖片：**
-> 1. 在 GitHub 上編輯 Markdown 時，你可以直接將圖片拖曳到編輯框中，GitHub 會自動幫你上傳並產生 Markdown 圖片連結。
-> 2. 或者，你可以在專案中建立一個 `assets` 資料夾，把圖片放進去後，用 `![月曆畫面](assets/calendar-view.png)` 這樣的語法引用。
-
-<!-- 請在這裡插入你的圖片 -->
-![歡迎畫面 Placeholder](https://via.placeholder.com/800x450?text=Welcome+Screen+Screenshot)
-![日曆面板 Placeholder](https://via.placeholder.com/800x450?text=Calendar+View+Screenshot)
-![控制與篩選面板 Placeholder](https://via.placeholder.com/800x450?text=Control+Panel+Screenshot)
+![歡迎畫面](assets\welcome-zh-TW.png)
+![面板](assets\controlpanel-zh-TW.png)
 
 ---
 
