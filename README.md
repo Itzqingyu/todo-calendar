@@ -1,6 +1,7 @@
 # Obsidian Todo Calendar
 
 English | [繁體中文](README.zh-TW.md)
+
 A visual calendar and timeline view for your Markdown to-do lists in Obsidian.
 
 This plugin transforms your Markdown task list into an intuitive calendar and timeline interface, supporting bi-directional synchronization, internationalization, and a native Obsidian experience.
