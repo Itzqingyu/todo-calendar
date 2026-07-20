@@ -78,17 +78,34 @@
     }).open();
   }
 
-  let eventRef: any;
+  let modifyEventRef: any;
+  let deleteEventRef: any;
+  let renameEventRef: any;
 
   onMount(() => {
-    eventRef = app.vault.on("modify", onModify);
+    modifyEventRef = app.vault.on("modify", onModify);
+    deleteEventRef = app.vault.on("delete", (file) => {
+      if (file.path === $currentFileStore) {
+        fileExists = false;
+        $tasksStore = [];
+      }
+    });
+    renameEventRef = app.vault.on("rename", (file, oldPath) => {
+      if (oldPath === $currentFileStore) {
+        $currentFileStore = file.path;
+        if (plugin && plugin.settings) {
+          plugin.settings.targetFile = file.path;
+          plugin.saveSettings();
+        }
+      }
+    });
     loadTasks();
   });
 
   onDestroy(() => {
-    if (eventRef) {
-      app.vault.offref(eventRef);
-    }
+    if (modifyEventRef) app.vault.offref(modifyEventRef);
+    if (deleteEventRef) app.vault.offref(deleteEventRef);
+    if (renameEventRef) app.vault.offref(renameEventRef);
   });
 
   function handleSelectDate(event: CustomEvent<string>) {

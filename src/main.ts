@@ -83,6 +83,11 @@ class TodoCalendarSettingTab extends PluginSettingTab {
     this.plugin = plugin;
   }
 
+  // @ts-ignore
+  getSettingDefinitions() {
+    return [];
+  }
+
   display(): void {
     const { containerEl } = this;
     const $t = get(t);
@@ -99,6 +104,7 @@ class TodoCalendarSettingTab extends PluginSettingTab {
           .onChange(async (value) => {
             this.plugin.settings.language = value as Language;
             await this.plugin.saveSettings();
+            // @ts-ignore
             this.display();
           });
       });
@@ -113,8 +119,9 @@ class TodoCalendarSettingTab extends PluginSettingTab {
         button.setButtonText($t.settings_change_btn).onClick(() => {
           new FileSuggestModal(this.plugin.app, (file) => {
             this.plugin.settings.targetFile = file.path;
-            this.plugin.saveSettings().then(() => {
+            void this.plugin.saveSettings().then(() => {
               currentFileStore.set(file.path);
+              // @ts-ignore
               this.display();
             });
           }).open();
